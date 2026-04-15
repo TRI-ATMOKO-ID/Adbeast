@@ -37,10 +37,10 @@ cat << 'EOF' > $PREFIX/bin/adbeast
 # Simpan lokasi markas rahasia bot
 DIST_DIR="$PREFIX/share/adbeast_system"
 
-# PAKSA Termux untuk membaca file libpython3.13.so di dalam folder bot
-export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"
+# BALIK URUTANNYA: Baca sistem Termux dulu, baru baca folder bot
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$DIST_DIR"
 
-# Jalankan bot langsung dari lokasi user saat ini (agar bisa baca file .json)
+# Jalankan bot langsung dari lokasi user saat ini
 "$DIST_DIR/botku.bin" "$@"
 EOF
 
