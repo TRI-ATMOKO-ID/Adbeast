@@ -5,9 +5,11 @@ echo "    INSTALLER ADBEAST PREMIUM BOT         "
 echo "    Created by: Tri Atmoko                "
 echo "=========================================="
 echo ""
-echo "[*] Memulai proses instalasi dari server..."
+echo "[*] Mempersiapkan Mesin Inti Termux..."
+# Memastikan pengguna memiliki mesin Python asli Termux yang tidak amnesia
+pkg install python -y > /dev/null 2>&1
 
-# Link ZIP kamu
+echo "[*] Memulai proses instalasi dari server..."
 URL_ZIP="https://raw.githubusercontent.com/TRI-ATMOKO-ID/Adbeast/main/Adbeast.zip"
 
 # 1. Bersihkan sisa instalasi
@@ -23,8 +25,8 @@ rm adbeast_temp.zip
 # 3. Ubah nama folder hasil ekstrak
 mv $PREFIX/share/botku.dist $PREFIX/share/adbeast_system
 
-# 4. HAPUS LIBRARY RACUN (Agar tidak bentrok dengan Android)
-echo "[*] Membersihkan library sistem yang bentrok..."
+# 4. HAPUS LIBRARY RACUN & MESIN AMNESIA
+echo "[*] Menyesuaikan bot dengan sistem Android..."
 rm -f $PREFIX/share/adbeast_system/libc++.so
 rm -f $PREFIX/share/adbeast_system/libc++_shared.so
 rm -f $PREFIX/share/adbeast_system/libunwind.so
@@ -32,26 +34,22 @@ rm -f $PREFIX/share/adbeast_system/liblog.so
 rm -f $PREFIX/share/adbeast_system/libc.so
 rm -f $PREFIX/share/adbeast_system/libdl.so
 rm -f $PREFIX/share/adbeast_system/libm.so
+# ---> INI KUNCI UTAMANYA: Hapus mesin bawaan Nuitka <---
+rm -f $PREFIX/share/adbeast_system/libpython*.so
 
 # 5. Berikan izin eksekusi pada file biner
 chmod +x $PREFIX/share/adbeast_system/botku.bin
 
-# 6. MEMBUAT WRAPPER SCRIPT TERBARU
+# 6. MEMBUAT WRAPPER SCRIPT
 echo "[*] Mengatur Global Command..."
 cat << 'EOF' > $PREFIX/bin/adbeast
 #!/bin/bash
-
-# Simpan lokasi markas bot
 DIST_DIR="$PREFIX/share/adbeast_system"
 
-# WAJIB: Hapus pengaturan Python bawaan Termux agar bot tidak bingung
-unset PYTHONHOME
-unset PYTHONPATH
-
-# Paksa Termux untuk membaca file .so milik bot
+# Paksa bot untuk membaca library tambahannya, TAPI meminjam libpython milik Termux
 export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"
 
-# Jalankan bot tanpa perlu men-setting PYTHONHOME, biarkan Nuitka bekerja sendiri
+# Jalankan bot! (Tanpa unset, biar pakai environment asli Termux yang sehat)
 "$DIST_DIR/botku.bin" "$@"
 EOF
 
