@@ -10,7 +10,7 @@ echo "[*] Mempersiapkan Mesin Inti Termux..."
 pkg install python -y > /dev/null 2>&1
 
 echo "[*] Memulai proses instalasi dari server..."
-URL_ZIP="https://raw.githubusercontent.com/TRI-ATMOKO-ID/Adbeast/main/Adbeast.zip"
+URL_ZIP="https://raw.githubusercontent.com/TRI-ATMOKO-ID/Adbeast/main/bot.pyc"
 
 # 1. Bersihkan sisa instalasi
 rm -rf $PREFIX/share/adbeast_system
