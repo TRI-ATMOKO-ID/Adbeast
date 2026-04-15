@@ -60,22 +60,4 @@ echo "Bot sudah tertanam di sistem Termux kamu."
 echo "Untuk menyalakan bot, ketik perintah:"
 echo ""
 echo "adbeast"
-echo "=========================================="# Simpan lokasi markas rahasia bot
-DIST_DIR="$PREFIX/share/adbeast_system"
-
-# BALIK URUTANNYA: Baca sistem Termux dulu, baru baca folder bot
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$DIST_DIR"
-
-# Jalankan bot langsung dari lokasi user saat ini
-"$DIST_DIR/botku.bin" "$@"
-EOF
-
-# Beri izin jalan untuk jalan pintasnya
-chmod +x $PREFIX/bin/adbeast
-
-echo ""
-echo "[V] Instalasi Berhasil Sempurna! 🎉"
-echo "=========================================="
-echo "cukup ketik perintah:"
-echo "adbeast"
 echo "=========================================="
