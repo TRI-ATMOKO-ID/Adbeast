@@ -39,11 +39,19 @@ rm -f $PREFIX/share/adbeast_system/libm.so
 # 6. Berikan izin eksekusi pada file biner
 chmod +x $PREFIX/share/adbeast_system/botku.bin
 
-# 7. MEMBUAT WRAPPER SCRIPT (Pake metode Echo agar 100% aman)
+# 7. MEMBUAT WRAPPER SCRIPT (Anti Bentrok Lingkungan)
 echo "[*] Mengatur Global Command..."
 echo '#!/bin/bash' > $PREFIX/bin/adbeast
 echo 'DIST_DIR="'$PREFIX'/share/adbeast_system"' >> $PREFIX/bin/adbeast
+
+# 1. Hapus variabel Python bawaan Termux agar tidak bentrok
+echo 'unset PYTHONHOME' >> $PREFIX/bin/adbeast
+echo 'unset PYTHONPATH' >> $PREFIX/bin/adbeast
+
+# 2. Paksa baca library lokal bot
 echo 'export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"' >> $PREFIX/bin/adbeast
+
+# 3. Eksekusi bot
 echo '"$DIST_DIR/botku.bin" "$@"' >> $PREFIX/bin/adbeast
 
 # Beri izin jalan untuk jalan pintasnya
