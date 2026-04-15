@@ -6,54 +6,39 @@ echo "    Created by: Tri Atmoko                "
 echo "=========================================="
 echo ""
 echo "[*] Mempersiapkan Mesin Inti Termux..."
-# Memastikan pengguna memiliki mesin Python asli Termux yang tidak amnesia
-pkg install python -y > /dev/null 2>&1
+
+# 1. Pastikan mesin Python dan mesin pembaca gambar (Tesseract) terpasang
+pkg update -y
+pkg install python tesseract -y > /dev/null 2>&1
+
+echo "[*] Menginstall library pendukung (Telethon, Rich, dll)..."
+# 2. Install semua modul pip yang dibutuhkan oleh bot kamu
+pip install telethon requests rich pillow pytesseract > /dev/null 2>&1
 
 echo "[*] Memulai proses instalasi dari server..."
-URL_ZIP="https://raw.githubusercontent.com/TRI-ATMOKO-ID/Adbeast/main/bot.pyc"
+# Link langsung ke file .pyc kamu
+URL_PYC="https://raw.githubusercontent.com/TRI-ATMOKO-ID/Adbeast/main/bot.pyc"
 
-# 1. Bersihkan sisa instalasi
+# 3. Bersihkan sisa instalasi lama
 rm -rf $PREFIX/share/adbeast_system
 rm -f $PREFIX/bin/adbeast
 
-# 2. Download & Ekstrak ZIP
-echo "[*] Men-download dan merakit sistem..."
-wget -qO adbeast_temp.zip $URL_ZIP
-unzip -q adbeast_temp.zip -d $PREFIX/share/
-rm adbeast_temp.zip
+# 4. Buat markas baru untuk bot
+mkdir -p $PREFIX/share/adbeast_system
 
-# 3. Ubah nama folder hasil ekstrak
-mv $PREFIX/share/botku.dist $PREFIX/share/adbeast_system
+# 5. Download file PYC langsung ke markasnya (Tanpa Unzip)
+echo "[*] Men-download file sistem..."
+wget -qO $PREFIX/share/adbeast_system/bot.pyc $URL_PYC
 
-# 4. HAPUS LIBRARY RACUN & MESIN AMNESIA
-echo "[*] Menyesuaikan bot dengan sistem Android..."
-rm -f $PREFIX/share/adbeast_system/libc++.so
-rm -f $PREFIX/share/adbeast_system/libc++_shared.so
-rm -f $PREFIX/share/adbeast_system/libunwind.so
-rm -f $PREFIX/share/adbeast_system/liblog.so
-rm -f $PREFIX/share/adbeast_system/libc.so
-rm -f $PREFIX/share/adbeast_system/libdl.so
-rm -f $PREFIX/share/adbeast_system/libm.so
-# ---> INI KUNCI UTAMANYA: Hapus mesin bawaan Nuitka <---
-rm -f $PREFIX/share/adbeast_system/libpython*.so
-
-# 5. Berikan izin eksekusi pada file biner
-chmod +x $PREFIX/share/adbeast_system/botku.bin
-
-# 6. MEMBUAT WRAPPER SCRIPT
+# 6. MEMBUAT WRAPPER SCRIPT (Jalan Pintas)
 echo "[*] Mengatur Global Command..."
 cat << 'EOF' > $PREFIX/bin/adbeast
 #!/bin/bash
-DIST_DIR="$PREFIX/share/adbeast_system"
-
-# Paksa bot untuk membaca library tambahannya, TAPI meminjam libpython milik Termux
-export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"
-
-# Jalankan bot! (Tanpa unset, biar pakai environment asli Termux yang sehat)
-"$DIST_DIR/botku.bin" "$@"
+# Menjalankan file .pyc menggunakan mesin Python bawaan Termux
+python $PREFIX/share/adbeast_system/bot.pyc "$@"
 EOF
 
-# Beri izin jalan untuk jalan pintasnya
+# 7. Beri izin jalan untuk jalan pintasnya
 chmod +x $PREFIX/bin/adbeast
 
 echo ""
