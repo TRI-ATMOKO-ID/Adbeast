@@ -15,7 +15,7 @@ rm -rf $PREFIX/share/adbeast_system
 rm -f $PREFIX/bin/adbeast
 
 # 2. Download file ZIP
-echo "[*] Men-download data sistem (mungkin butuh beberapa detik)..."
+echo "[*] Men-download data sistem..."
 wget -qO adbeast_temp.zip $URL_ZIP
 
 # 3. Ekstrak ZIP ke dalam ruang aman sistem
@@ -26,29 +26,25 @@ rm adbeast_temp.zip
 # 4. Ubah nama folder hasil ekstrak
 mv $PREFIX/share/botku.dist $PREFIX/share/adbeast_system
 
-# ==========================================================
-# 5. JURUS PAMUNGKAS: HAPUS LIBRARY YANG BENTROK!
-echo "[*] Membersihkan library C++ yang bentrok dengan Android..."
+# 5. JURUS SAPU JAGAT: HAPUS SEMUA LIBRARY RACUN NUITKA
+echo "[*] Membersihkan library sistem yang bentrok..."
 rm -f $PREFIX/share/adbeast_system/libc++.so
 rm -f $PREFIX/share/adbeast_system/libc++_shared.so
 rm -f $PREFIX/share/adbeast_system/libunwind.so
-# ==========================================================
+rm -f $PREFIX/share/adbeast_system/liblog.so
+rm -f $PREFIX/share/adbeast_system/libc.so
+rm -f $PREFIX/share/adbeast_system/libdl.so
+rm -f $PREFIX/share/adbeast_system/libm.so
 
 # 6. Berikan izin eksekusi pada file biner
 chmod +x $PREFIX/share/adbeast_system/botku.bin
 
-# 7. MEMBUAT WRAPPER SCRIPT
+# 7. MEMBUAT WRAPPER SCRIPT (Pake metode Echo agar 100% aman)
 echo "[*] Mengatur Global Command..."
-cat << 'EOF' > $PREFIX/bin/adbeast
-#!/bin/bash
-DIST_DIR="$PREFIX/share/adbeast_system"
-
-# Karena file biang kerok sudah dihapus, kita kembali ke settingan awal yang paling stabil:
-export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"
-
-# Jalankan bot langsung dari lokasi user saat ini
-"$DIST_DIR/botku.bin" "$@"
-EOF
+echo '#!/bin/bash' > $PREFIX/bin/adbeast
+echo 'DIST_DIR="'$PREFIX'/share/adbeast_system"' >> $PREFIX/bin/adbeast
+echo 'export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"' >> $PREFIX/bin/adbeast
+echo '"$DIST_DIR/botku.bin" "$@"' >> $PREFIX/bin/adbeast
 
 # Beri izin jalan untuk jalan pintasnya
 chmod +x $PREFIX/bin/adbeast
