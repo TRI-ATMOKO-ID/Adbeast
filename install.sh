@@ -8,7 +8,7 @@ echo ""
 echo "[*] Memulai proses instalasi dari server..."
 
 # --- GANTI DENGAN LINK RAW FILE ZIP KAMU ---
-URL_ZIP="https://raw.githubusercontent.com/UsernameKamu/RepoKamu/main/Adbeast.zip"
+URL_ZIP="https://github.com/TRI-ATMOKO-ID/Adbeast/raw/refs/heads/main/Adbeast.zip"
 
 # 1. Bersihkan sisa instalasi yang gagal/lama
 rm -rf $PREFIX/share/adbeast_system
