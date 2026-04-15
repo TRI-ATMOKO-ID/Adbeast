@@ -30,12 +30,18 @@ mv $PREFIX/share/botku.dist $PREFIX/share/adbeast_system
 chmod +x $PREFIX/share/adbeast_system/botku.bin
 
 # 6. MEMBUAT WRAPPER SCRIPT (JALAN PINTAS SAKTI)
+echo "[*] Mengatur Global Command..."
 cat << 'EOF' > $PREFIX/bin/adbeast
 #!/bin/bash
-# Pindah sebentar ke folder kerjamu saat ini
-CURRENT_DIR=$(pwd)
-# Eksekusi bot dari markas rahasianya
-cd $PREFIX/share/adbeast_system && ./botku.bin "$@"
+
+# Simpan lokasi markas rahasia bot
+DIST_DIR="$PREFIX/share/adbeast_system"
+
+# PAKSA Termux untuk membaca file libpython3.13.so di dalam folder bot
+export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"
+
+# Jalankan bot langsung dari lokasi user saat ini (agar bisa baca file .json)
+"$DIST_DIR/botku.bin" "$@"
 EOF
 
 # Beri izin jalan untuk jalan pintasnya
