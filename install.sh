@@ -10,23 +10,20 @@ echo "[*] Memulai proses instalasi dari server..."
 # Link ZIP kamu
 URL_ZIP="https://raw.githubusercontent.com/TRI-ATMOKO-ID/Adbeast/main/Adbeast.zip"
 
-# 1. Bersihkan sisa instalasi yang gagal
+# 1. Bersihkan sisa instalasi
 rm -rf $PREFIX/share/adbeast_system
 rm -f $PREFIX/bin/adbeast
 
-# 2. Download file ZIP
-echo "[*] Men-download data sistem..."
+# 2. Download & Ekstrak ZIP
+echo "[*] Men-download dan merakit sistem..."
 wget -qO adbeast_temp.zip $URL_ZIP
-
-# 3. Ekstrak ZIP ke dalam ruang aman sistem
-echo "[*] Mengekstrak dan merakit sistem..."
 unzip -q adbeast_temp.zip -d $PREFIX/share/
 rm adbeast_temp.zip
 
-# 4. Ubah nama folder hasil ekstrak
+# 3. Ubah nama folder hasil ekstrak
 mv $PREFIX/share/botku.dist $PREFIX/share/adbeast_system
 
-# 5. JURUS SAPU JAGAT: HAPUS SEMUA LIBRARY RACUN NUITKA
+# 4. HAPUS LIBRARY RACUN (Agar tidak bentrok dengan Android)
 echo "[*] Membersihkan library sistem yang bentrok..."
 rm -f $PREFIX/share/adbeast_system/libc++.so
 rm -f $PREFIX/share/adbeast_system/libc++_shared.so
@@ -36,23 +33,27 @@ rm -f $PREFIX/share/adbeast_system/libc.so
 rm -f $PREFIX/share/adbeast_system/libdl.so
 rm -f $PREFIX/share/adbeast_system/libm.so
 
-# 6. Berikan izin eksekusi pada file biner
+# 5. Berikan izin eksekusi pada file biner
 chmod +x $PREFIX/share/adbeast_system/botku.bin
 
-# 7. MEMBUAT WRAPPER SCRIPT (Mengarahkan Otak Python)
+# 6. MEMBUAT WRAPPER SCRIPT TERBARU
 echo "[*] Mengatur Global Command..."
-echo '#!/bin/bash' > $PREFIX/bin/adbeast
-echo 'DIST_DIR="'$PREFIX'/share/adbeast_system"' >> $PREFIX/bin/adbeast
+cat << 'EOF' > $PREFIX/bin/adbeast
+#!/bin/bash
 
-# Paksa Termux untuk membaca file .so bot
-echo 'export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"' >> $PREFIX/bin/adbeast
+# Simpan lokasi markas bot
+DIST_DIR="$PREFIX/share/adbeast_system"
 
-# Tunjuk secara eksplisit di mana folder inti Python milik bot berada
-echo 'export PYTHONHOME="$DIST_DIR"' >> $PREFIX/bin/adbeast
-echo 'export PYTHONPATH="$DIST_DIR"' >> $PREFIX/bin/adbeast
+# WAJIB: Hapus pengaturan Python bawaan Termux agar bot tidak bingung
+unset PYTHONHOME
+unset PYTHONPATH
 
-# Eksekusi bot
-echo '"$DIST_DIR/botku.bin" "$@"' >> $PREFIX/bin/adbeast
+# Paksa Termux untuk membaca file .so milik bot
+export LD_LIBRARY_PATH="$DIST_DIR:$LD_LIBRARY_PATH"
+
+# Jalankan bot tanpa perlu men-setting PYTHONHOME, biarkan Nuitka bekerja sendiri
+"$DIST_DIR/botku.bin" "$@"
+EOF
 
 # Beri izin jalan untuk jalan pintasnya
 chmod +x $PREFIX/bin/adbeast
